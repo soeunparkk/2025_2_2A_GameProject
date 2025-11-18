@@ -2,24 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EmenyDetector : MonoBehaviour
+public class EnemyDetector : MonoBehaviour
 {
-    [SerializeField] private float detectionRadius = 10f;
+    [SerializeField] private float detectionRadius = 50f;
     [SerializeField] private LayerMask enemyLayer;
 
     public GameObject GetClosestEnemy()
     {
-        Collider[] enemiesInRange = Physics.OverlapSphere(transform.position, detectionRadius, enemyLayer);     //구체로 적이 있는지 검사
+        Collider[] enemiesInRange = Physics.OverlapSphere(transform.position, detectionRadius, enemyLayer);
 
-        if (enemiesInRange.Length > 0 )             //범위 안에 들어온 적이 있는지 검사 (0 이상이면 적이 범위 내에 들어옴)
+        if (enemiesInRange.Length > 0)
         {
             GameObject bestTarget = null;
-            float closestDistanceSqr = Mathf.Infinity;                      //최대 숫자로 시작해서 가까운 거리로 계속 전환 된다. 
+            float closestDistanceSqr = Mathf.Infinity;
             Vector3 currentPosition = transform.position;
 
-            foreach(Collider enemyCollider in enemiesInRange)
+            foreach (Collider enemyCollider in enemiesInRange)
             {
-                //자기 자신은 제외 
+                // 자기 자신은 제외
                 if (enemyCollider.gameObject == this.gameObject)
                     continue;
 
@@ -39,26 +39,28 @@ public class EmenyDetector : MonoBehaviour
             return null;
         }
     }
-    
+
     public List<GameObject> GetEnemiesInRange()
     {
         List<GameObject> enemiesList = new List<GameObject>();
-        Collider[] enemiesInRange = Physics.OverlapSphere(transform.position , detectionRadius, enemyLayer);
+        Collider[] enemiesInRange = Physics.OverlapSphere(transform.position, detectionRadius, enemyLayer);
 
-        foreach(Collider enemyColider in enemiesInRange)
+        foreach (Collider enemyCollider in enemiesInRange)
         {
-            if(enemyColider.gameObject != this.gameObject)
+            // 자기 자신은 제외
+            if (enemyCollider.gameObject != this.gameObject)
             {
-                enemiesList.Add(enemyColider.gameObject);
+                enemiesList.Add(enemyCollider.gameObject);
             }
         }
-        
-        return enemiesList; 
+
+        return enemiesList;
     }
 
-    private void OnDrawGizomsSelected()                     //에디터에서 범위 확인용
+    // 에디터에서 범위 확인용
+    private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position , detectionRadius);
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }
 }
